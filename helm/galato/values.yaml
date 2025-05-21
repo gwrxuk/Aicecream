@@ -1,0 +1,103 @@
+replicaCount: 3
+
+image:
+  repository: galato
+  tag: latest
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: galato.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: galato-tls
+      hosts:
+        - galato.example.com
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  server:
+    port: 8080
+    host: "0.0.0.0"
+    workers: 4
+
+  database:
+    url: "postgres://postgres:postgres@postgres:5432/galato"
+    max_connections: 20
+    min_connections: 5
+
+  kubernetes:
+    context: "default"
+    namespace: "galato"
+    in_cluster: true
+
+  monitoring:
+    prometheus_endpoint: "http://prometheus-server:9090"
+    grafana_endpoint: "http://grafana:3000"
+    alertmanager_endpoint: "http://alertmanager:9093"
+
+  cloud:
+    provider: "aws"
+    region: "us-west-2"
+    credentials_path: "/etc/galato/aws-credentials"
+
+  rollup:
+    default_chain_id: 1337
+    sequencer_url: "http://sequencer:8545"
+    validator_url: "http://validator:8546"
+    batch_submitter_url: "http://batch-submitter:8547"
+
+prometheus:
+  enabled: true
+  server:
+    persistentVolume:
+      enabled: true
+
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+  adminPassword: "changeme"
+
+cert-manager:
+  enabled: true
+  installCRDs: true 
+ 

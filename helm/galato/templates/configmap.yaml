@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "galato.fullname" . }}-config
+  labels:
+    {{- include "galato.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    server:
+      port: {{ .Values.config.server.port }}
+      host: {{ .Values.config.server.host | quote }}
+      workers: {{ .Values.config.server.workers }}
+
+    database:
+      url: {{ .Values.config.database.url | quote }}
+      max_connections: {{ .Values.config.database.max_connections }}
+      min_connections: {{ .Values.config.database.min_connections }}
+
+    kubernetes:
+      context: {{ .Values.config.kubernetes.context | quote }}
+      namespace: {{ .Values.config.kubernetes.namespace | quote }}
+      in_cluster: {{ .Values.config.kubernetes.in_cluster }}
+
+    monitoring:
+      prometheus_endpoint: {{ .Values.config.monitoring.prometheus_endpoint | quote }}
+      grafana_endpoint: {{ .Values.config.monitoring.grafana_endpoint | quote }}
+      alertmanager_endpoint: {{ .Values.config.monitoring.alertmanager_endpoint | quote }}
+
+    cloud:
+      provider: {{ .Values.config.cloud.provider | quote }}
+      region: {{ .Values.config.cloud.region | quote }}
+      credentials_path: {{ .Values.config.cloud.credentials_path | quote }}
+
+    rollup:
+      default_chain_id: {{ .Values.config.rollup.default_chain_id }}
+      sequencer_url: {{ .Values.config.rollup.sequencer_url | quote }}
+      validator_url: {{ .Values.config.rollup.validator_url | quote }}
+      batch_submitter_url: {{ .Values.config.rollup.batch_submitter_url | quote }} 

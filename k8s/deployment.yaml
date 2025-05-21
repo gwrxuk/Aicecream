@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: galato
+  namespace: galato
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: galato
+  template:
+    metadata:
+      labels:
+        app: galato
+    spec:
+      containers:
+      - name: galato
+        image: galato:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: CONFIG_PATH
+          value: /etc/galato/config.yaml
+        - name: RUST_LOG
+          value: info
+        volumeMounts:
+        - name: config
+          mountPath: /etc/galato
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: config
+        configMap:
+          name: galato-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: galato
+  namespace: galato
+spec:
+  selector:
+    app: galato
+  ports:
+  - port: 80
+    targetPort: http
+    name: http
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: galato-config
+  namespace: galato
+data:
+  config.yaml: |
+    server:
+      port: 8080
+      host: "0.0.0.0"
+      workers: 4
+
+    database:
+      url: "postgres://postgres:postgres@postgres:5432/galato"
+      max_connections: 20
+      min_connections: 5
+
+    kubernetes:
+      context: "default"
+      namespace: "galato"
+      in_cluster: true
+
+    monitoring:
+      prometheus_endpoint: "http://prometheus-server:9090"
+      grafana_endpoint: "http://grafana:3000"
+      alertmanager_endpoint: "http://alertmanager:9093"
+
+    cloud:
+      provider: "aws"
+      region: "us-west-2"
+      credentials_path: "/etc/galato/aws-credentials"
+
+    rollup:
+      default_chain_id: 1337
+      sequencer_url: "http://sequencer:8545"
+      validator_url: "http://validator:8546"
+      batch_submitter_url: "http://batch-submitter:8547"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: galato
+  namespace: galato
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - galato.example.com
+    secretName: galato-tls
+  rules:
+  - host: galato.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: galato
+            port:
+              name: http 

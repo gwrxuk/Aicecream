@@ -1,0 +1,65 @@
+[package]
+name = "galato"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A production-grade Web3 infrastructure management system with RaaS capabilities"
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] }
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["trace"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+k8s-openapi = { version = "0.21", features = ["v1_28"] }
+kube = { version = "0.90", features = ["runtime", "derive"] }
+kube-runtime = "0.90"
+prometheus = "0.13"
+metrics = "0.21"
+metrics-exporter-prometheus = "0.12"
+ethers = { version = "2.0", features = ["ws", "rustls"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono"] }
+uuid = { version = "1.7", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+dotenv = "0.15"
+anyhow = "1.0"
+thiserror = "1.0"
+async-trait = "0.1"
+futures = "0.3"
+tower-http-cors = "0.5"
+tower-http-validate-request = "0.5"
+tower-http-compression = "0.5"
+tower-http-classify = "0.5"
+tower-http-trace = "0.5"
+tower-http-auth = "0.5"
+tower-http-limit = "0.5"
+tower-http-catch-panic = "0.5"
+tower-http-normalize-path = "0.5"
+tower-http-serve-static = "0.5"
+tower-http-compression-br = "0.5"
+tower-http-compression-gzip = "0.5"
+tower-http-compression-deflate = "0.5"
+tower-http-compression-zstd = "0.5"
+tower-http-compression-brotli = "0.5"
+tower-http-compression-lz4 = "0.5"
+tower-http-compression-snappy = "0.5"
+tower-http-compression-zlib = "0.5"
+tower-http-compression-lzma = "0.5"
+tower-http-compression-xz = "0.5"
+tower-http-compression-bzip2 = "0.5"
+tower-http-compression-lzop = "0.5"
+tower-http-compression-lz4 = "0.5"
+tower-http-compression-snappy = "0.5"
+tower-http-compression-zlib = "0.5"
+tower-http-compression-lzma = "0.5"
+tower-http-compression-xz = "0.5"
+tower-http-compression-bzip2 = "0.5"
+tower-http-compression-lzop = "0.5"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockall = "0.12"
+test-log = "0.2" 

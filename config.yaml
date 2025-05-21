@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  host: "0.0.0.0"
+  workers: 4
+
+database:
+  url: "postgres://postgres:postgres@localhost:5432/galato"
+  max_connections: 20
+  min_connections: 5
+
+kubernetes:
+  context: "default"
+  namespace: "galato"
+  in_cluster: false
+
+monitoring:
+  prometheus_endpoint: "http://localhost:9090"
+  grafana_endpoint: "http://localhost:3000"
+  alertmanager_endpoint: "http://localhost:9093"
+
+cloud:
+  provider: "aws"
+  region: "us-west-2"
+  credentials_path: "~/.aws/credentials"
+
+rollup:
+  default_chain_id: 1337
+  sequencer_url: "http://localhost:8545"
+  validator_url: "http://localhost:8546"
+  batch_submitter_url: "http://localhost:8547" 
